@@ -2,36 +2,36 @@ import tkinter as tk;#Interface gráfica
 import sqlite3;#Integração com o SQlite
 import pandas as pd; #Exportar para Excel
 
+def gerar_tabela():
 
+    conect=sqlite3.connect('armas.db')#Cria conexão com o sql
 
-conect=sqlite3.connect('armas.db')#Cria conexão com o sql
+    c=conect.cursor()#Execução da conexão
 
-c=conect.cursor()#Execução da conexão
+    #Cria tabela se não existir
+    c.execute('''CREATE TABLE IF NOT EXISTS armas(
+    NumeroSerie INTEGER PRIMARY KEY,
+    NúmeroSigma INTERGER NOT NULL, 
+    DataCRAF TEXT NOT NULL,
+    ValidadeCRAF TEXT NOT NULL,
+    Marca TEXT,
+    Modelo TEXT,
+    Tipo TEXT,
+    Calibre TEXT,
+    País TEXT,
+    Alma TEXT,
+    NúmeroRaias INTEGER,
+    SentidoRaias TEXT,
+    Capacidade INTEGER,
+    NúmeroCanos INTEGER,
+    ComprimentoCano INTEGER,
+    Funcionamento TEXT,
+    Acabamento TEXT,
+    Restrita TEXT
+    )''')
 
-#Cria tabela se não existir
-c.execute('''CREATE TABLE IF NOT EXISTS armas(
- NumeroSerie INTEGER PRIMARY KEY,
- NúmeroSigma INTERGER NOT NULL, 
- DataCRAF TEXT NOT NULL,
- ValidadeCRAF TEXT NOT NULL,
- Marca TEXT,
- Modelo TEXT,
- Tipo TEXT,
- Calibre TEXT,
- País TEXT,
- Alma TEXT,
- NúmeroRaias INTEGER,
- SentidoRaias TEXT,
- Capacidade INTEGER,
- NúmeroCanos INTEGER,
- ComprimentoCano INTEGER,
- Funcionamento TEXT,
- Acabamento TEXT,
- Restrita TEXT
- )''')
-
-conect.commit()#Commita a operação anterior
-conect.close()#Encerra a conexão
+    conect.commit()#Commita a operação anterior
+    conect.close()#Encerra a conexão
 
 #Função botão
 def cadastrar_arma():
@@ -176,9 +176,6 @@ label_Restr.grid(row=18, column=0, padx=10, pady=10)
 
 #Caixas de Texto
 
-label_texto=tk.Label(janela, text="Resultado:")
-label_texto.grid(column= 2, row=2, rowspan=10, columnspan=3, ipadx=200)
-
 
 entry_NumeroSerie=tk.Entry(janela, text="Número de Série")
 entry_NumeroSerie.grid(row=1, column=1, padx=10, pady=10)
@@ -236,11 +233,10 @@ entry_Restr.grid(row=18, column=1, padx=10, pady=10)
 
 #Botões
 
+botao_gerarTabela=tk.Button(janela, text="Gerar Banco de Dados", command=gerar_tabela)
+botao_gerarTabela.grid(row=1, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+
 botao_cadastrar=tk.Button(janela, text="Cadastrar Arma", command=cadastrar_arma)
-botao_cadastrar.grid(row=22, column=0, padx=10, pady=10, ipadx=200, columnspan=2)
-
-botao_listar=tk.Button(janela, text="Listar Armas Cadastradas", command=listar_arma)
-botao_listar.grid(row=22, column=0, padx=10, pady=10, ipadx=200, columnspan=2)
-
+botao_cadastrar.grid(row=2, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
 
 janela.mainloop()
