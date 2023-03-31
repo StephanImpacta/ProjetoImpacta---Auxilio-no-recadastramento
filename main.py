@@ -2,13 +2,17 @@ import tkinter as tk;#Interface gráfica
 import sqlite3;#Integração com o SQlite
 import pandas as pd; #Exportar para Excel
 
+
+#================================FUNÇÕES=====================================================
+
+#Função para criar a Tabela
 def gerar_tabela():
 
     conect=sqlite3.connect('armas.db')#Cria conexão com o sql
 
     c=conect.cursor()#Execução da conexão
 
-    #Cria tabela se não existir
+   
     c.execute('''CREATE TABLE IF NOT EXISTS armas(
     NumeroSerie INTEGER PRIMARY KEY,
     NúmeroSigma INTERGER NOT NULL, 
@@ -28,18 +32,22 @@ def gerar_tabela():
     Funcionamento TEXT,
     Acabamento TEXT,
     Restrita TEXT
-    )''')
+    )''') #Cria tabela se não existir
 
     conect.commit()#Commita a operação anterior
     conect.close()#Encerra a conexão
 
-#Função botão
+
+
+
+#Função botão gerar banco de dados
 def cadastrar_arma():
+
     conectBotao=sqlite3.connect('armas.db')#Cria conexão com o sql
 
-    c1=conectBotao.cursor()
+    c1=conectBotao.cursor()#Cria o mensageiro
 
-    #Inserir os valores na tabela
+    
     c1.execute( "INSERT INTO armas VALUES(:nserie, :nsigma, :dcraf, :vcraf, :marca, :modelo, :tipo, :calibre, :pais, :alma, :nraias, :sraias, :capacidade, :ncanos, :comprimento, :func,:acabamento, :restrito)",{
         'nserie':entry_NumeroSerie.get(),
         'nsigma':entry_NumeroSigma.get(),
@@ -58,16 +66,21 @@ def cadastrar_arma():
         'comprimento':entry_Comp.get(),
         'func':entry_Func.get(),
         'acabamento':entry_Acab.get(),
-        'restrito':entry_Restr.get()
+        'restrito':entry_Restr.get()#Inserir os valores na tabela
 
 
 
     }
-    )       
-    conectBotao.commit()
-    conectBotao.close()
+    )     
+   
+    conectBotao.commit()#Confirma as ações realizadas
+    conectBotao.close()#Encerra a conexão
 
-#limpar as caixas de texto depois do cadastro
+    label_Texto=tk.Label(janela, text=f"{entry_Modelo.get()} cadastrado com sucesso!")
+    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=1, rowspan=18)#Informa que o produto foi cadastrado com sucesso
+
+
+
     entry_NumeroSerie.delete(0,"end")
     entry_NumeroSigma.delete(0,"end")
     entry_DataCRAF.delete(0,"end")
@@ -85,40 +98,57 @@ def cadastrar_arma():
     entry_Comp.delete(0,"end")
     entry_Func.delete(0,"end")
     entry_Acab.delete(0,"end")
-    entry_Restr.delete(0,"end")
+    entry_Restr.delete(0,"end")#limpar as caixas de texto depois do cadastro
+
+
+#Função para exportar tabela para o excel
+
+def export_database():
+     conectBanco=sqlite3.connect('armas.db')#Cria Conexão cCom o Banco de Dados
+     
+     c2=conectBanco.cursor()#Cria um mensageiro 
+     c2.execute('SELECT *, oid FROM armas')#Seleciona todos os itens cadastrados na tabela
+     armasCadastradas=c2.fetchall()#Armazena as informações recuperadas da tabela
+     armasCadastradas=pd.DataFrame(armasCadastradas, columns=['Número de Série','Número Sigma','Data de Emissão do CRAF','Validade do CRAF', 'Marca', 'Modelo','Tipo', 'Calibre','País','Alma','Número de Raias','Sentido das Raias', 'Capacidade', 'Número de Canos', 'Comprimento do Cano', 'Funcionamento','Acabamento','É restrita?', 'id_banco'])#Cria as colunas da tabela
+     armasCadastradas.to_excel('ArmasCadastradas.xlsx') #Cria o arquivo excel e exporta os dados para a tabela
+
+     label_Texto=tk.Label(janela, text=f"Documento exportado com Sucesso!")
+     label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18) #Muda a informação da Label para indicar que o documento foi exportado com sucesso
+
+
+
+     conectBanco.commit()#Confirma as ações
+     conectBanco.close()#Encerra a conexão
+
+
+
+#Função para exibir armas cadastradas
+def exibe_arma():
+       conetc1=sqlite3.connect('armas.db')
+       c2=conetc1.cursor()
+       c2.execute("SELECT * FROM armas")
+       resultado=c2.fetchall()
+       dict=Listbox(app)
+       for c in resultado:
+            dict.insert(c)
+       dict.pack()
+
+       label_Texto=tk.Label(janela, text=f"{dict}")
+       label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=1, rowspan=18)
+
+       conetc1.commit()
+       conetc1()
 
 
 
 
-def listar_arma():
-            conectListar=sqlite3.connect('armas.db')#Cria conexão com o sql
 
-            c2=conectListar.cursor()
-
-    #Inserir os valores na tabela
-            c2.execute( 'SELECT * FROM armas')
-            armas_cadastradas=c2.fetchall()
-            dicionario={}
-            for i in armas_cadastradas:
-                    c=0
-                    dicionario[c]=i
-                    c+=1
-                    
-
-            label_texto=tk.Label(janela, text=dicionario[i])
-            label_texto.grid(column= 2, row=2, rowspan=10, columnspan=3, ipadx=200)
-
-        
-            conectListar.commit()
-            conectListar.close()
-
-
-
-janela=tk.Tk()#Inicio do controle da interface gráfica
+#=========================INICIO DA INTERFACE GRÁFICA=======================================
+janela=tk.Tk()
 
 janela.title('Ferramenta de Recadastramento de Armas')#Título exibido na interface gráfica
 
-#Título da caixa de texto
+#=========================TÍTULO DAS CAIXAS DE TEXTO========================================
 
 label_Serie=tk.Label(janela, text="Número de Série")
 label_Serie.grid(row=1, column=0, padx=10, pady=10)
@@ -174,7 +204,8 @@ label_Acab.grid(row=17, column=0, padx=10, pady=10)
 label_Restr=tk.Label(janela, text="Calibre Restrito? (s/n)")
 label_Restr.grid(row=18, column=0, padx=10, pady=10)
 
-#Caixas de Texto
+
+#=============================CAIXAS DE TEXTO===============================================
 
 
 entry_NumeroSerie=tk.Entry(janela, text="Número de Série")
@@ -231,12 +262,23 @@ entry_Acab.grid(row=17, column=1, padx=10, pady=10)
 entry_Restr=tk.Entry(janela, text="Calibre Restrito? (s/n)")
 entry_Restr.grid(row=18, column=1, padx=10, pady=10)
 
-#Botões
+#=================================BOTÕES====================================================
 
 botao_gerarTabela=tk.Button(janela, text="Gerar Banco de Dados", command=gerar_tabela)
 botao_gerarTabela.grid(row=1, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+#Botão para gerar Banco de Dados
+
 
 botao_cadastrar=tk.Button(janela, text="Cadastrar Arma", command=cadastrar_arma)
 botao_cadastrar.grid(row=2, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+#Botão para Cadastrar arma no banco de dados
+
+
+botao_exibir=tk.Button(janela, text="Exportar tabela para excel", command=export_database)
+botao_exibir.grid(row=3, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+#Botão para Exportar tabela para o Excel
+
+
+
 
 janela.mainloop()
