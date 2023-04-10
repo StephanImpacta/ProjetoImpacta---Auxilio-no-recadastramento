@@ -1,6 +1,7 @@
 import tkinter as tk;#Interface gráfica
 import sqlite3;#Integração com o SQlite
 import pandas as pd; #Exportar para Excel
+from tkinter import Scrollbar;
 
 
 #================================FUNÇÕES=====================================================
@@ -37,7 +38,8 @@ def gerar_tabela():
     conect.commit()#Commita a operação anterior
     conect.close()#Encerra a conexão
 
-
+    label_Texto=tk.Label(janela, text=f"Banco de dados gerado com sucesso!")
+    label_Texto.grid(row=23, column=1, padx=0, pady=10, ipadx=100, columnspan=3,)#Informa que o banco de dadosfoi gerado com sucesso
 
 
 #Função botão gerar banco de dados
@@ -77,7 +79,7 @@ def cadastrar_arma():
     conectBotao.close()#Encerra a conexão
 
     label_Texto=tk.Label(janela, text=f"{entry_Modelo.get()} cadastrado com sucesso!")
-    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=1, rowspan=18)#Informa que o produto foi cadastrado com sucesso
+    label_Texto.grid(row=23, column=1, padx=0, pady=10, ipadx=100, columnspan=3,)#Informa que o produto foi cadastrado com sucesso
 
 
 
@@ -149,6 +151,8 @@ janela=tk.Tk()
 janela.title('Ferramenta de Recadastramento de Armas')#Título exibido na interface gráfica
 
 #=========================TÍTULO DAS CAIXAS DE TEXTO========================================
+scroolBar= Scrollbar()
+
 
 label_Serie=tk.Label(janela, text="Número de Série")
 label_Serie.grid(row=1, column=0, padx=10, pady=10)
@@ -178,31 +182,31 @@ label_Pais=tk.Label(janela, text="País de Fabricação da arma")
 label_Pais.grid(row=9, column=0, padx=10, pady=10)
 
 label_Alma=tk.Label(janela, text="Alma do cano")
-label_Alma.grid(row=10, column=0, padx=10, pady=10)
+label_Alma.grid(row=1, column=3, padx=10, pady=10)
 
 label_Raias=tk.Label(janela, text="Número de Raias do cano")
-label_Raias.grid(row=11, column=0, padx=10, pady=10)
+label_Raias.grid(row=2, column=3, padx=10, pady=10)
 
 label_SRaias=tk.Label(janela, text="Sentido das Raias")
-label_SRaias.grid(row=12, column=0, padx=10, pady=10)
+label_SRaias.grid(row=3, column=3, padx=10, pady=10)
 
 label_Cap=tk.Label(janela, text="Capacidade de Munição")
-label_Cap.grid(row=13, column=0, padx=10, pady=10)
+label_Cap.grid(row=4, column=3, padx=10, pady=10)
 
 label_NCanos=tk.Label(janela, text="Número de Canos")
-label_NCanos.grid(row=14, column=0, padx=10, pady=10)
+label_NCanos.grid(row=5, column=3, padx=10, pady=10)
 
 label_Comp=tk.Label(janela, text="Comprimento do Cano")
-label_Comp.grid(row=15, column=0, padx=10, pady=10)
+label_Comp.grid(row=6, column=3, padx=10, pady=10)
 
 label_Func=tk.Label(janela, text="Tipo de Funcionamento")
-label_Func.grid(row=16, column=0, padx=10, pady=10)
+label_Func.grid(row=7, column=3, padx=10, pady=10)
 
 label_Acab=tk.Label(janela, text="Tipo de Acabamento")
-label_Acab.grid(row=17, column=0, padx=10, pady=10)
+label_Acab.grid(row=8, column=3, padx=10, pady=10)
 
 label_Restr=tk.Label(janela, text="Calibre Restrito? (s/n)")
-label_Restr.grid(row=18, column=0, padx=10, pady=10)
+label_Restr.grid(row=9, column=3, padx=10, pady=10)
 
 
 #=============================CAIXAS DE TEXTO===============================================
@@ -236,49 +240,50 @@ entry_Pais=tk.Entry(janela, text="País de Fabricação da arma")
 entry_Pais.grid(row=9, column=1, padx=10, pady=10)
 
 entry_Alma=tk.Entry(janela, text="Alma do cano")
-entry_Alma.grid(row=10, column=1, padx=10, pady=10)
+entry_Alma.grid(row=1, column=4, padx=10, pady=10)
 
 entry_Raias=tk.Entry(janela, text="Número de Raias do cano")
-entry_Raias.grid(row=11, column=1, padx=10, pady=10)
+entry_Raias.grid(row=2, column=4, padx=10, pady=10)
 
 entry_SRaias=tk.Entry(janela, text="Sentido das Raias")
-entry_SRaias.grid(row=12, column=1, padx=10, pady=10)
+entry_SRaias.grid(row=3, column=4, padx=10, pady=10)
 
 entry_Cap=tk.Entry(janela, text="Capacidade de Munição")
-entry_Cap.grid(row=13, column=1, padx=10, pady=10)
+entry_Cap.grid(row=4, column=4, padx=10, pady=10)
 
 entry_NCanos=tk.Entry(janela, text="Número de Canos")
-entry_NCanos.grid(row=14, column=1, padx=10, pady=10)
+entry_NCanos.grid(row=5, column=4, padx=10, pady=10)
 
 entry_Comp=tk.Entry(janela, text="Comprimento do Cano")
-entry_Comp.grid(row=15, column=1, padx=10, pady=10)
+entry_Comp.grid(row=6, column=4, padx=10, pady=10)
 
 entry_Func=tk.Entry(janela, text="Tipo de Funcionamento")
-entry_Func.grid(row=16, column=1, padx=10, pady=10)
+entry_Func.grid(row=7, column=4, padx=10, pady=10)
 
 entry_Acab=tk.Entry(janela, text="Tipo de Acabamento")
-entry_Acab.grid(row=17, column=1, padx=10, pady=10)
+entry_Acab.grid(row=8, column=4, padx=10, pady=10)
 
 entry_Restr=tk.Entry(janela, text="Calibre Restrito? (s/n)")
-entry_Restr.grid(row=18, column=1, padx=10, pady=10)
+entry_Restr.grid(row=9, column=4, padx=10, pady=10)
 
 #=================================BOTÕES====================================================
 
 botao_gerarTabela=tk.Button(janela, text="Gerar Banco de Dados", command=gerar_tabela)
-botao_gerarTabela.grid(row=1, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+botao_gerarTabela.grid(row=20, column=1, padx=0, pady=10, ipadx=150, columnspan=3)
 #Botão para gerar Banco de Dados
 
 
 botao_cadastrar=tk.Button(janela, text="Cadastrar Arma", command=cadastrar_arma)
-botao_cadastrar.grid(row=2, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+botao_cadastrar.grid(row=21, column=1, padx=0, pady=10, ipadx=100, columnspan=3)
 #Botão para Cadastrar arma no banco de dados
 
 
 botao_exibir=tk.Button(janela, text="Exportar tabela para excel", command=export_database)
-botao_exibir.grid(row=3, column=2, padx=10, pady=10, ipadx=200, columnspan=2)
+botao_exibir.grid(row=22, column=1, padx=0, pady=10, ipadx=100, columnspan=3)
 #Botão para Exportar tabela para o Excel
 
 
 
 
 janela.mainloop()
+
