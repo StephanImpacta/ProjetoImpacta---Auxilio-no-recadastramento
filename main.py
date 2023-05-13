@@ -125,27 +125,6 @@ def export_database():
 
 
 
-#Função para exibir armas cadastradas
-def exibe_arma():
-       conetc1=sqlite3.connect('armas.db')#Cria a conexão
-       c2=conetc1.cursor()#Cria o cursor
-       c2.execute("SELECT * FROM armas")
-       resultado=c2.fetchall()
-       dict=Listbox(app)
-       for c in resultado:
-            dict.insert(c)
-       dict.pack()
-
-       label_Texto=tk.Label(janela, text=f"{dict}")
-       label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=1, rowspan=18)
-
-       conetc1.commit()
-       conetc1.close()
-
-
-
-
-
 #Função para contar as armas cadastradas, eindicando a quantidade de armas de calibre restrito e de calibre permitido
 def lista_armas():
     conectlista=sqlite3.connect('armas.db')
@@ -162,37 +141,35 @@ def lista_armas():
 
     total=(permitidas+restritas)
 
-    c5=conectlista.cursor()
-    c5.execute("SELECT Marca, Modelo, oid FROM armas")
-    listaArmas=c5.fetchall()
-
-    c6=conectlista.cursor()
-    c6.execute("SELECT Marca, Modelo, Calibre oid FROM armas WHERE restrita='n'")
-    lpermitidas=c6.fetchall()
-
-    c7=conectlista.cursor()
-    c7.execute("SELECT Marca, Modelo, Calibre oid FROM armas WHERE restrita='s'")
-    lrestritas=c7.fetchall()
+    conectlista.commit()#Confirma as ações
+    conectlista.close()#Encerra a conexão
 
 
+    label_Texto=tk.Label(janela, text=f"{total} ARMAS FORAM CADASTRADAS:  \n \n-{restritas} armas de calibre RESTRITO e \n- {permitidas} armas de calibre PERMITIDO")
+    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18) #Muda a informação da Label para indicar a quantidade de armas cadastradas e de quais calibres.
 
-    label_Texto=tk.Label(janela, wraplength=win_width, text=f"{total} ARMAS FORAM CADASTRADAS:  \n \n{listaArmas}\n \n-{restritas} ARMAS DE CALIBRE RESTRITO:\n{lrestritas}\n \n- {permitidas} ARMAS DE CALIBRE PERMITIDO:\n{lpermitidas}")
-    label_Texto.grid( row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18, ) #Muda a informação da Label para indicar a quantidade de armas cadastradas e de quais calibres.
+#Função para apagar o banco de dados 
+def apaga_banco():
+    conectapaga=sqlite3.connect('armas.db')
+    c5=conectapaga.cursor()
+    c5.execute('DROP TABLE armas')
 
-    conectlista.commit()
-    conectlista.close()
+  
 
+
+    label_Texto=tk.Label(janela, text="O banco de dados foi excluido com sucesso")
+    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18) #Muda a informação da Label para indicar que a vase de dados foi excluida com sucesso
+
+
+    conectapaga.commit()#Confirma as ações
+    conectapaga.close()#Encerra a conexão
 
 
 
 #=========================INICIO DA INTERFACE GRÁFICA=======================================
-win_width, win_height = 200, 850#Definição do tamanho da janela
-
 janela=tk.Tk()
 
 janela.title('Ferramenta de Recadastramento de Armas')#Título exibido na interface gráfica
-
-
 
 #=========================TÍTULO DAS CAIXAS DE TEXTO========================================
 
@@ -328,6 +305,9 @@ botao_listar=tk.Button(janela, text="Listar Armas Cadastradas", command=lista_ar
 botao_listar.grid(row=4,column=2, padx=10, pady=10, ipadx=200, columnspan=2) 
 #Botão para lostar as armas cadastradas
 
+botao_apagar=tk.Button(janela, text="Apagar Banco de Dados", command=apaga_banco)
+botao_apagar.grid(row=5,column=2, padx=10, pady=10, ipadx=200, columnspan=2) 
+#Botão para apagar o banco de dados
+
 
 janela.mainloop()
-
