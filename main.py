@@ -1,7 +1,7 @@
 import tkinter as tk;#Interface gráfica
 import sqlite3;#Integração com o SQlite
 import pandas as pd; #Exportar para Excel
-from tkinter import Listbox;
+import os#Exclusão de Banco de dados
 
 
 
@@ -141,35 +141,47 @@ def lista_armas():
 
     total=(permitidas+restritas)
 
-    conectlista.commit()#Confirma as ações
-    conectlista.close()#Encerra a conexão
+    c5=conectlista.cursor()
+    c5.execute("SELECT Marca, Modelo, oid FROM armas")
+    listaArmas=c5.fetchall()
+
+    c6=conectlista.cursor()
+    c6.execute("SELECT Marca, Modelo, Calibre oid FROM armas WHERE restrita='n'")
+    lpermitidas=c6.fetchall()
+
+    c7=conectlista.cursor()
+    c7.execute("SELECT Marca, Modelo, Calibre oid FROM armas WHERE restrita='s'")
+    lrestritas=c7.fetchall()
 
 
-    label_Texto=tk.Label(janela, text=f"{total} ARMAS FORAM CADASTRADAS:  \n \n-{restritas} armas de calibre RESTRITO e \n- {permitidas} armas de calibre PERMITIDO")
-    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18) #Muda a informação da Label para indicar a quantidade de armas cadastradas e de quais calibres.
+
+    label_Texto=tk.Label(janela, wraplength=win_width, text=f"{total} ARMAS FORAM CADASTRADAS:  \n \n{listaArmas}\n \n-{restritas} ARMAS DE CALIBRE RESTRITO:\n{lrestritas}\n \n- {permitidas} ARMAS DE CALIBRE PERMITIDO:\n{lpermitidas}")
+    label_Texto.grid( row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18, ) #Muda a informação da Label para indicar a quantidade de armas cadastradas e de quais calibres.
+
+    conectlista.commit()
+    conectlista.close()
 
 #Função para apagar o banco de dados 
 def apaga_banco():
-    conectapaga=sqlite3.connect('armas.db')
-    c5=conectapaga.cursor()
-    c5.execute('DROP TABLE armas')
 
-  
+    if os.path.exists("armas.db"):
+        os.remove("armas.db")
+        label_Texto=tk.Label(janela, text=f"Banco de dados excluído com sucesso")
+        label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18)
+    else:
+        label_Texto=tk.Label(janela, text=f"O Banco de dados não existe")
+        label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18)
 
-
-    label_Texto=tk.Label(janela, text="O banco de dados foi excluido com sucesso")
-    label_Texto.grid(row=4, column=2, padx=10, pady=10, ipadx=200, columnspan=2, rowspan=18) #Muda a informação da Label para indicar que a vase de dados foi excluida com sucesso
-
-
-    conectapaga.commit()#Confirma as ações
-    conectapaga.close()#Encerra a conexão
-
-
+   
 
 #=========================INICIO DA INTERFACE GRÁFICA=======================================
+win_width, win_height = 200, 850#Definição do tamanho da janela
+
 janela=tk.Tk()
 
 janela.title('Ferramenta de Recadastramento de Armas')#Título exibido na interface gráfica
+
+
 
 #=========================TÍTULO DAS CAIXAS DE TEXTO========================================
 
@@ -308,6 +320,5 @@ botao_listar.grid(row=4,column=2, padx=10, pady=10, ipadx=200, columnspan=2)
 botao_apagar=tk.Button(janela, text="Apagar Banco de Dados", command=apaga_banco)
 botao_apagar.grid(row=5,column=2, padx=10, pady=10, ipadx=200, columnspan=2) 
 #Botão para apagar o banco de dados
-
 
 janela.mainloop()
